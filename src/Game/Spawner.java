@@ -93,7 +93,7 @@ public class Spawner {
 			}
 		}else {
 			
-			if(!(main.cfg.getBoolean(Arena+".mobfield."+mobfield+".isinuse"))) {
+			if(!(main.cfg.getBoolean(Arena+"."+Playerside+".mobfield."+mobfield+".isinuse"))) {
 			Double x = main.arena.getDouble(Arena+"."+Playerside+".Mobzone."+mobfield+".loc.X");
 			Double y = main.arena.getDouble(Arena+"."+Playerside+".Mobzone."+mobfield+".loc.Y");
 			Double z = main.arena.getDouble(Arena+"."+Playerside+".Mobzone."+mobfield+".loc.Z");

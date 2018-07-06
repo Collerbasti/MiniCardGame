@@ -32,6 +32,12 @@ public class MenuSpawner {
 				if(main.cfg.getBoolean(Arena+".p1"+".mobfield."+p1Mobzone+".isinuse")) {
 					if(main.cfg.getString(Arena+".p1"+".mobfield."+p1Mobzone+".mobname")=="Verdekte Karte") {
 						
+						ItemStack Skull = new ItemStack(Material.WOOD , 1);
+				    	ItemMeta IMeta = (ItemMeta) Skull.getItemMeta(); 
+				    	IMeta.setDisplayName(main.cfg.getString("Verdekte Karte"));
+				    	Skull.setItemMeta(IMeta);
+				    	myInventory.setItem(Count,Skull);
+						
 					}else {
 					ItemStack Skull = new ItemStack(Material.SKULL_ITEM , 1);
 			    	SkullMeta SMeta = (SkullMeta) Skull.getItemMeta(); 
@@ -51,7 +57,11 @@ public class MenuSpawner {
 						
 						if(main.cfg.getString(Arena+".p1"+".mobfield."+p1wizzone+".mobname")=="Verdekte Karte") {
 							
-						}else {
+							ItemStack Skull = new ItemStack(Material.WOOD , 1);
+					    	ItemMeta IMeta =  Skull.getItemMeta(); 
+					    	IMeta.setDisplayName(main.cfg.getString("Verdekte Karte"));
+					    	Skull.setItemMeta(IMeta);
+					    	myInventory.setItem(Count,Skull);
 							
 						}
 				}
@@ -63,6 +73,12 @@ public class MenuSpawner {
 						if(main.cfg.getBoolean(Arena+".p2"+".mobfield."+p2mobzone+".isinuse")) {
 							if(main.cfg.getString(Arena+".p2"+".mobfield."+p2mobzone+".mobname")=="Verdekte Karte") {
 								
+								ItemStack Skull = new ItemStack(Material.WOOD , 1);
+						    	ItemMeta IMeta =  Skull.getItemMeta(); 
+						    	IMeta.setDisplayName(main.cfg.getString("Verdekte Karte"));
+						    	Skull.setItemMeta(IMeta);
+						    	myInventory.setItem(Count,Skull);
+						    	
 							}else {
 								ItemStack Skull = new ItemStack(Material.SKULL_ITEM , 1);
 						    	SkullMeta SMeta = (SkullMeta) Skull.getItemMeta(); 
@@ -80,8 +96,11 @@ public class MenuSpawner {
 								
 								if(main.cfg.getString(Arena+".p2"+".Wizzone."+p2wizzone+".mobname")=="Verdekte Karte") {
 									
-								}else {
-									
+									ItemStack Skull = new ItemStack(Material.WOOD , 1);
+							    	ItemMeta IMeta = Skull.getItemMeta(); 
+							    	IMeta.setDisplayName(main.cfg.getString("Verdekte Karte"));
+							    	Skull.setItemMeta(IMeta);
+							    	myInventory.setItem(Count,Skull);
 								}
 								
 						}					
@@ -94,7 +113,8 @@ public class MenuSpawner {
 	
 	
 }
-	}}
+	}
+			}
 	p.openInventory(myInventory);	
 	}
 
