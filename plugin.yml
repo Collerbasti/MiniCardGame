@@ -7,3 +7,5 @@ commands:
     description: Erstelle eine Arena
   TestSummon:
     description: Testet die Arena
+  Duell:
+    description: Startet ein duell

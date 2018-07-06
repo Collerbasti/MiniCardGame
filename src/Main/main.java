@@ -11,6 +11,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import Main.CardGameEventListener;
 import commands.CMDCreateArena;
+import commands.CMDDuell;
 import commands.CMDTestSummon;
 
 public class main extends JavaPlugin implements Listener {
@@ -19,6 +20,8 @@ public class main extends JavaPlugin implements Listener {
 	public static FileConfiguration cfg;
 	public static File Arena;
 	public static FileConfiguration arena;
+	public static File Duell;
+	public static FileConfiguration duell;
 	
 	
 	@Override	
@@ -32,6 +35,7 @@ public class main extends JavaPlugin implements Listener {
 		
 		this.getCommand("CreateArena").setExecutor(new CMDCreateArena());
 		this.getCommand("TestSummon").setExecutor(new CMDTestSummon());
+		this.getCommand("Duell").setExecutor(new CMDDuell());
 		
 		
 		System.out.println("MiniCardGane Loading");
@@ -40,6 +44,8 @@ public class main extends JavaPlugin implements Listener {
     	main.cfg = YamlConfiguration.loadConfiguration(main.Config);
     	main.Arena = new File("plugins/MiniCardGame","Arenas.yml");
     	main.arena = YamlConfiguration.loadConfiguration(main.Arena);
+    	main.Duell = new File("plugins/MiniCardGame","Duell.yml");
+    	main.duell = YamlConfiguration.loadConfiguration(main.Duell);
     	
 	}
 	public void onDisable() {

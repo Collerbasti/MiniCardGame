@@ -175,7 +175,8 @@ public class CMDCreateArena implements CommandExecutor {
 				if(main.arena.getBoolean(args[1]+".allow.p2.mobzone.1")&&main.arena.getBoolean(args[1]+".allow.p2.mobzone.2")&&main.arena.getBoolean(args[1]+".allow.p2.mobzone.3")&&main.arena.getBoolean(args[1]+".allow.p2.mobzone.4")&&main.arena.getBoolean(args[1]+".allow.p2.mobzone.5"))	{
 				
 					if(main.arena.getBoolean(args[1]+".allow.p2.wizzone.1")&&main.arena.getBoolean(args[1]+".allow.p2.wizzone.2")&&main.arena.getBoolean(args[1]+".allow.p2.wizzone.3")&&main.arena.getBoolean(args[1]+".allow.p2.wizzone.4")&&main.arena.getBoolean(args[1]+".allow.p2.wizzone.5")) {
-					main.arena.set(args[1]+".enable", true);	
+					main.arena.set(args[1]+".enable", true);
+					p.sendMessage("Die Arena Wird aktiviert");
 					main.arena.set("Arena.create",false);
 					}else {
 						p.sendMessage("Bitte setzte alle Felder Code 1");
