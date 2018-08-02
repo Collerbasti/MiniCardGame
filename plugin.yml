@@ -9,3 +9,5 @@ commands:
     description: Testet die Arena
   Duell:
     description: Startet ein duell
+  nextPhase:
+    description: Startet ein duell

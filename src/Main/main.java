@@ -2,6 +2,8 @@ package Main;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -9,10 +11,12 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import Game.Spawner;
 import Main.CardGameEventListener;
 import commands.CMDCreateArena;
 import commands.CMDDuell;
 import commands.CMDTestSummon;
+import commands.CMDnextPhase;
 
 public class main extends JavaPlugin implements Listener {
 	
@@ -36,6 +40,7 @@ public class main extends JavaPlugin implements Listener {
 		this.getCommand("CreateArena").setExecutor(new CMDCreateArena());
 		this.getCommand("TestSummon").setExecutor(new CMDTestSummon());
 		this.getCommand("Duell").setExecutor(new CMDDuell());
+		this.getCommand("nextPhase").setExecutor(new CMDnextPhase());
 		
 		
 		System.out.println("MiniCardGane Loading");
@@ -49,6 +54,46 @@ public class main extends JavaPlugin implements Listener {
     	
 	}
 	public void onDisable() {
+		ArrayList<String> Arenas = new ArrayList<String>();
+		Arenas.addAll(main.arena.getStringList("Arena.list"));
+		int count = 0;
+		for(String E : Arenas) {
+			
+			String p1Name = main.duell.getString(Arena+".p1");
+			String p2Name = main.duell.getString(Arena+".p2");
+			
+			
+			Game.Spawner.deSummon("p1", 1, Arenas.get(count), Bukkit.getPlayer(p1Name));
+			Game.Spawner.deSummon("p1", 2, Arenas.get(count), Bukkit.getPlayer(p1Name));
+			Game.Spawner.deSummon("p1", 3, Arenas.get(count), Bukkit.getPlayer(p1Name));
+			Game.Spawner.deSummon("p1", 4, Arenas.get(count), Bukkit.getPlayer(p1Name));
+			Game.Spawner.deSummon("p1", 5, Arenas.get(count), Bukkit.getPlayer(p1Name));
+			
+			Game.Spawner.deSummon("p2", 1, Arenas.get(count), Bukkit.getPlayer(p2Name));
+			Game.Spawner.deSummon("p2", 2, Arenas.get(count), Bukkit.getPlayer(p2Name));
+			Game.Spawner.deSummon("p2", 3, Arenas.get(count), Bukkit.getPlayer(p2Name));
+			Game.Spawner.deSummon("p2", 4, Arenas.get(count), Bukkit.getPlayer(p2Name));
+			Game.Spawner.deSummon("p2", 5, Arenas.get(count), Bukkit.getPlayer(p2Name));
+			
+			
+			
+			
+			main.arena.set(E+".1 p1", "");
+			main.arena.set(E+".1 p2", "");
+			
+			main.arena.set(E+".2 p1", "");
+			main.arena.set(E+".2 p2", "");
+			
+			main.arena.set(E+".3 p1", "");
+			main.arena.set(E+".3 p2", "");
+			
+			main.arena.set(E+".4 p1", "");
+			main.arena.set(E+".4 p2", "");
+			
+			main.arena.set(E+".5 p1", "");
+			main.arena.set(E+".5 p2", "");
+		count = count+1;
+		}
 		try {
 			main.arena.save(main.Arena);
 		} catch (IOException e) {

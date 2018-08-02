@@ -1,5 +1,6 @@
 package commands;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 import org.bukkit.command.Command;
@@ -178,6 +179,12 @@ public class CMDCreateArena implements CommandExecutor {
 					main.arena.set(args[1]+".enable", true);
 					p.sendMessage("Die Arena Wird aktiviert");
 					main.arena.set("Arena.create",false);
+					try {
+						main.arena.save(main.Arena);
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 					}else {
 						p.sendMessage("Bitte setzte alle Felder Code 1");
 					}
