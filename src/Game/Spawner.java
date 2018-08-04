@@ -36,6 +36,7 @@ public class Spawner {
 	    	p.getInventory().remove(Material.CREEPER_HEAD);
 			p.getInventory().setItem(Slot, p1Health);
 				}
+				
 			}else 	if(p.getInventory().getItemInMainHand().getItemMeta().getDisplayName().equalsIgnoreCase("Beschwöre ZOMBIE")) {
 				if(p.getInventory().getItemInMainHand().getAmount()-1==0) {
 					p.getInventory().remove(Material.ZOMBIE_HEAD);	
