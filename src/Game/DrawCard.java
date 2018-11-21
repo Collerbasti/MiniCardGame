@@ -56,23 +56,8 @@ public class DrawCard {
 				p.sendMessage("Du hast eine Zauberkarte gezogen");
 				int r3 = r.nextInt((Wizzcards.Wizzcards_Main.listOfAllCards().size()-1)+1)+1;
 				String Karte = Wizzcards.Wizzcards_Main.listOfAllCards().get(r3);
-				Karte.replace(" ", "_");
 				
-				String str = Karte+"(\""+p.getName()+"\")";
-				Wizzcards.Karten k = new Wizzcards.Karten();
-				Method m = null;
-				try {
-					m = k.getClass().getMethod(str);
-				} catch (NoSuchMethodException | SecurityException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} // suche Methode namens str
-				try {
-					Object rValue = m.invoke(k,null);
-				} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+				Wizzcards.Karten.Karte(p.getName(), Karte);
 				
 				
 			}
