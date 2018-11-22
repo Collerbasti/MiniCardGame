@@ -152,7 +152,7 @@ public class Spawner {
 		main.arena.set(Arena+"."+entity.getCustomName(), entity.getUniqueId());
 		main.cfg.set(Arena+"."+Playerside+".mobfield."+mobfield+".isinuse",true);
 		main.cfg.set(Arena+"."+Playerside+".mobfield."+mobfield+".mobname","Skeleton");
-		main.cfg.set(Arena+"."+Playerside+".mobfield."+mobfield+".mobint",0);
+		main.cfg.set(Arena+"."+Playerside+".mobfield."+mobfield+".mobint",1);
 		main.cfg.set(Arena+"."+Playerside+".mobfield."+mobfield+".Def",4);
 	}
 	

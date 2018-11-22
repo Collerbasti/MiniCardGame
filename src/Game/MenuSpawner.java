@@ -78,7 +78,7 @@ public class MenuSpawner {
 					    	SkullMeta SMeta = (SkullMeta) Skull.getItemMeta(); 
 					    	SMeta.setDisplayName(main.cfg.getString(Arena+".p1"+".mobfield."+p1Mobzone+".mobname"));
 				    		ArrayList<String> lore = new ArrayList<String>();
-				    		lore.add("1");
+				    		lore.add(main.cfg.getString(Arena+"."+"p1"+".mobfield."+p1Mobzone+".mobint"));
 				    		lore.add(Integer.toString(main.cfg.getInt(Arena+"."+"p1.mobfield."+p1Mobzone+".Def")));
 				    		SMeta.setLore(lore);
 				    		Skull.setItemMeta(SMeta);
@@ -88,7 +88,7 @@ public class MenuSpawner {
 					    	SkullMeta SMeta = (SkullMeta) Skull.getItemMeta(); 
 					    	SMeta.setDisplayName(main.cfg.getString(Arena+".p1"+".mobfield."+p1Mobzone+".mobname"));
 				    		ArrayList<String> lore = new ArrayList<String>();
-				    		lore.add("2");
+				    		lore.add(main.cfg.getString(Arena+"."+"p1"+".mobfield."+p1Mobzone+".mobint"));
 				    		lore.add(Integer.toString(main.cfg.getInt(Arena+"."+"p1.mobfield."+p1Mobzone+".Def")));
 				    		SMeta.setLore(lore);
 				    		Skull.setItemMeta(SMeta);
@@ -100,9 +100,10 @@ public class MenuSpawner {
 					    	SMeta.setDisplayName(main.cfg.getString(Arena+".p1"+".mobfield."+p1Mobzone+".mobname"));
 					    	Skull.setItemMeta(SMeta);
 					    	ArrayList<String> lore = new ArrayList<String>();
-					    	lore.add("1");
+					    	lore.add(main.cfg.getString(Arena+"."+"p1"+".mobfield."+p1Mobzone+".mobint"));
 				    		lore.add(Integer.toString(main.cfg.getInt(Arena+"."+"p2.mobfield."+p1Mobzone+".Def")));
 				    		SMeta.setLore(lore);
+				    		Skull.setItemMeta(SMeta);
 					    	myInventory.setItem(Count,Skull);
 				    	}
 				}
@@ -113,15 +114,15 @@ public class MenuSpawner {
 					int p1wizzone = Count -8;
 					if(main.cfg.getBoolean(Arena+".p1"+".wizzone."+p1wizzone+".isinuse")) {
 						
-						if(main.cfg.getString(Arena+".p1"+".wizzone."+p1wizzone+".mobname")=="Verdekte Karte") {
+						
 							
 							ItemStack Skull = new ItemStack(Material.ACACIA_WOOD , 1);
 					    	ItemMeta IMeta =  Skull.getItemMeta(); 
-					    	IMeta.setDisplayName("Verdekte Karte");
+					    	IMeta.setDisplayName(main.cfg.getString(Arena+".p1"+".wizzone."+p1wizzone+".mobname"));
 					    	Skull.setItemMeta(IMeta);
 					    	myInventory.setItem(Count,Skull);
 							
-						}
+						
 					}
 				}else if(Count == 22 || Count == 21 || Count == 20 || Count == 19 || Count == 18) {
 						int p2Mobzone = Count -17;
@@ -141,11 +142,11 @@ public class MenuSpawner {
 							    	SkullMeta SMeta = (SkullMeta) Skull.getItemMeta(); 
 							    	SMeta.setDisplayName(main.cfg.getString(Arena+".p2"+".mobfield."+p2Mobzone+".mobname"));
 							    	ArrayList<String> lore = new ArrayList<String>();
-						    		lore.add("1");
+							    	lore.add(main.cfg.getString(Arena+"."+"p2"+".mobfield."+p2Mobzone+".mobint"));
 						    		lore.add(Integer.toString(main.cfg.getInt(Arena+"."+"p2.mobfield."+p2Mobzone+".Def")));
 						    		SMeta.setLore(lore);
 							    	Skull.setItemMeta(SMeta);
-							    	Skull.setDurability((short) main.cfg.getInt(Arena+".p2"+".mobfield."+p2Mobzone+".mobint"));
+							    	
 							    	myInventory.setItem(Count,Skull);
 						    	}
 								
@@ -154,7 +155,7 @@ public class MenuSpawner {
 							    	SkullMeta SMeta = (SkullMeta) Skull.getItemMeta(); 
 							    	SMeta.setDisplayName(main.cfg.getString(Arena+".p2"+".mobfield."+p2Mobzone+".mobname"));
 						    		ArrayList<String> lore = new ArrayList<String>();
-						    		lore.add("1");
+						    		lore.add(main.cfg.getString(Arena+"."+"p2"+".mobfield."+p2Mobzone+".mobint"));
 						    		lore.add(Integer.toString(main.cfg.getInt(Arena+"."+"p2.mobfield."+p2Mobzone+".Def")));
 						    		SMeta.setLore(lore);
 						    		Skull.setItemMeta(SMeta);
@@ -164,7 +165,7 @@ public class MenuSpawner {
 							    	SkullMeta SMeta = (SkullMeta) Skull.getItemMeta(); 
 							    	SMeta.setDisplayName(main.cfg.getString(Arena+".p2"+".mobfield."+p2Mobzone+".mobname"));
 						    		ArrayList<String> lore = new ArrayList<String>();
-						    		lore.add("2");
+						    		lore.add(main.cfg.getString(Arena+"."+"p2"+".mobfield."+p2Mobzone+".mobint"));
 						    		lore.add(Integer.toString(main.cfg.getInt(Arena+"."+"p2.mobfield."+p2Mobzone+".Def")));
 						    		SMeta.setLore(lore);
 						    		Skull.setItemMeta(SMeta);
@@ -185,14 +186,14 @@ public class MenuSpawner {
 							int p2wizzone = Count -26;
 							if(main.cfg.getBoolean(Arena+".p2"+".wizzone."+p2wizzone+".isinuse")) {
 								
-								if(main.cfg.getString(Arena+".p2"+".wizzone."+p2wizzone+".mobname")=="Verdekte Karte") {
+							
 									
 									ItemStack Skull = new ItemStack(Material.ACACIA_WOOD , 1);
 							    	ItemMeta IMeta = Skull.getItemMeta(); 
-							    	IMeta.setDisplayName("Verdekte Karte");
+							    	IMeta.setDisplayName(main.cfg.getString(Arena+".p2"+".wizzone."+p2wizzone+".mobname"));
 							    	Skull.setItemMeta(IMeta);
 							    	myInventory.setItem(Count,Skull);
-								}
+								
 								
 						}					
 		}

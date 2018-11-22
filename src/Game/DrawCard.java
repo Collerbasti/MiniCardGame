@@ -55,7 +55,7 @@ public class DrawCard {
 				
 				p.sendMessage("Du hast eine Zauberkarte gezogen");
 				int r3 = r.nextInt((Wizzcards.Wizzcards_Main.listOfAllCards().size()-1)+1)+1;
-				String Karte = Wizzcards.Wizzcards_Main.listOfAllCards().get(r3);
+				String Karte = Wizzcards.Wizzcards_Main.listOfAllCards().get(r3-1);
 				
 				Wizzcards.Karten.Karte(p.getName(), Karte);
 				

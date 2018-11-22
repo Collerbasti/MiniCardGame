@@ -18,7 +18,7 @@ public class Karten {
 	if (Karte == "Sword_Of_Destiny") {
 	Player p1 =	Bukkit.getPlayer(p);
 	ItemStack Skull = new ItemStack(Material.DIAMOND_SWORD, 1);
-	SkullMeta SMeta = (SkullMeta) Skull.getItemMeta(); 
+	ItemMeta SMeta = Skull.getItemMeta(); 
 	SMeta.setDisplayName("Sword Of Destiny");
 	ArrayList<String> lore = new ArrayList<String>();
 	lore.add("Ausrüstungs Karte");
