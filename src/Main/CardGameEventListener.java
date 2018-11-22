@@ -80,7 +80,9 @@ public class CardGameEventListener implements Listener
 			Location Spawn = new Location(w,x,y,z,yaw,pitch);
 			w.getBlockAt(Spawn).setType(Material.ACACIA_WOOD);
 			main.cfg.set(Arena+"."+Playerside+".wizzone."+wizzfield+".isinuse",true);
-			main.cfg.set(Arena+"."+Playerside+".wizzone."+wizzfield+".mobname",main.cfg.getString(Arena+"."+Playerside+".wizzone."+mobfield+".catch.Name"));
+			pe.sendMessage(main.cfg.getString(Arena+".wizzone."+Playerside+"."+"catch.Name"));
+			pe.sendMessage(Arena+".wizzone."+Playerside+"."+"catch.Name");
+			main.cfg.set(Arena+"."+Playerside+".wizzone."+wizzfield+".mobname",main.cfg.getString(Arena+".wizzone."+Playerside+"."+"catch.Name"));
 			main.cfg.set(Arena+"."+Playerside+".wizzone."+wizzfield+".mobint",0);
 			
 			
