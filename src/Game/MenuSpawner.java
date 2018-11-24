@@ -101,7 +101,7 @@ public class MenuSpawner {
 					    	Skull.setItemMeta(SMeta);
 					    	ArrayList<String> lore = new ArrayList<String>();
 					    	lore.add(main.cfg.getString(Arena+"."+"p1"+".mobfield."+p1Mobzone+".mobint"));
-				    		lore.add(Integer.toString(main.cfg.getInt(Arena+"."+"p2.mobfield."+p1Mobzone+".Def")));
+				    		lore.add(Integer.toString(main.cfg.getInt(Arena+"."+"p1.mobfield."+p1Mobzone+".Def")));
 				    		SMeta.setLore(lore);
 				    		Skull.setItemMeta(SMeta);
 					    	myInventory.setItem(Count,Skull);

@@ -17,6 +17,7 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
@@ -38,7 +39,7 @@ public class CardGameEventListener implements Listener
 	@EventHandler 
 	public void onPLayerThrow(PlayerDropItemEvent ev) {	
 		Player p = ev.getPlayer();
-			if(main.cfg.getBoolean(p.getName()+".isinGame")) {
+			if(main.duell.getBoolean(p.getName()+".DuellAktiv")) {
 				ev.setCancelled(true);
 			}
 	}
@@ -50,7 +51,7 @@ public class CardGameEventListener implements Listener
 			 
 			Player p = Bukkit.getServer().getPlayer(pe.getName());
 		
-				if(main.cfg.getBoolean(p.getName()+".isinGame")) {
+				if(main.duell.getBoolean(p.getName()+".DuellAktiv")) {
 					ev.setCancelled(true);
 				}
 		 
@@ -66,9 +67,13 @@ public class CardGameEventListener implements Listener
 		if(ev.getInventory().getName().contains("Wähle auf welchem Zauberfeld die Karte liegen soll")) {
 			String Playerside = main.duell.getString(ev.getWhoClicked().getName()+".DuellSpieler");
 			String Arena =  Main.main.duell.getString(ev.getWhoClicked().getName()+".DuellArena");
-			
-			
-			int mobfield =main.cfg.getInt(Arena+"."+Playerside+".wizzone."+".catch.GetSlot")+1;
+			int mobfield =main.cfg.getInt(Arena+"."+Playerside+".wizzone."+".catch.GetSlot");
+			int mobslot = main.cfg.getInt(main.duell.getString(ev.getWhoClicked().getName()+".DuellArena")+"."+main.duell.getString(ev.getWhoClicked().getName()+".DuellSpieler")+".wizzone.catch.GetSlot");;
+			String MenueName = main.cfg.getString(main.duell.getString(ev.getWhoClicked().getName()+".DuellArena")+"."+main.duell.getString(ev.getWhoClicked().getName()+".DuellSpieler")+".wizzone.catch.Menuname");;;
+			main.cfg.set(Arena+"."+Playerside+".mobfield."+mobfield+".hasExtras",true);
+			int count = main.cfg.getInt(Arena+"."+Playerside+".mobfield."+mobfield+".Extras.count");
+			main.cfg.set(Arena+"."+Playerside+".mobfield."+mobfield+".Extras."+count+".mobfield", mobslot);
+			main.cfg.set(Arena+"."+Playerside+".mobfield."+mobfield+".Extras.count",count +1);
 			int wizzfield = ev.getSlot()+1; 
 			
 			Double x = main.arena.getDouble(Arena+"."+Playerside+".Wizzone."+wizzfield+".loc.X");
@@ -77,61 +82,107 @@ public class CardGameEventListener implements Listener
 			Float yaw = (float) main.arena.getDouble(Arena+"."+Playerside+".Wizzone."+wizzfield+".loc.Yaw");
 			Float pitch = (float) main.arena.getDouble(Arena+"."+Playerside+".Wizzone."+wizzfield+".loc.Pitch");
 			org.bukkit.World w = Bukkit.getWorld(main.arena.getString(Arena+"."+Playerside+".Wizzone."+wizzfield+".loc.World"));
-			Location Spawn = new Location(w,x,y,z,yaw,pitch);
+			Location Spawn = new Location(w,x,y,z,yaw,pitch); 
 			w.getBlockAt(Spawn).setType(Material.ACACIA_WOOD);
 			main.cfg.set(Arena+"."+Playerside+".wizzone."+wizzfield+".isinuse",true);
 			pe.sendMessage(main.cfg.getString(Arena+".wizzone."+Playerside+"."+"catch.Name"));
-			pe.sendMessage(Arena+".wizzone."+Playerside+"."+"catch.Name");
+			
 			main.cfg.set(Arena+"."+Playerside+".wizzone."+wizzfield+".mobname",main.cfg.getString(Arena+".wizzone."+Playerside+"."+"catch.Name"));
 			main.cfg.set(Arena+"."+Playerside+".wizzone."+wizzfield+".mobint",0);
 			
 			
 			String Mate = main.cfg.getString(Arena+"."+".wizzone."+Playerside+".catch.Material");
 			Material Mat = Material.getMaterial(Mate);
-			pe.getInventory().remove(Mat);
+			
+			
+			
+			ev.setCancelled(true);
+			int count2 = pe.getInventory().first(Mat);
+		
+			
+		
+		
+				
+			 if(pe.getInventory().getItem(count2).getType().name().equalsIgnoreCase(Mate)) {
+				if(pe.getInventory().getItem(count2).getAmount()-1 ==0) {
+					pe.getInventory().remove(Mat);
+					
+					
+				}
+				else {
+					
+				  	ItemStack p1Health = new ItemStack(Mat,pe.getInventory().getItem(count2).getAmount()-1);
+			    	SkullMeta p1Meta = (SkullMeta) p1Health.getItemMeta();
+			    	p1Meta.setDisplayName(pe.getInventory().getItem(count2).getItemMeta().getDisplayName());
+			    	p1Health.setItemMeta(p1Meta);
+			    	int Slot = count2;
+			    	pe.getInventory().remove(Mat);
+					pe.getInventory().setItem(Slot, p1Health);
+				
+				
+					
+				}
+			
+			
+			}
 			
 			
 			int Staerke = main.cfg.getInt(Arena+"."+Playerside+".wizzone."+mobfield+".catch.Strongnes");
-			pe.sendMessage(Integer.toString(Staerke));
 			
-			if(ev.getInventory().getName().contains("DEF +")){
-				
-		
-				main.cfg.set(Arena+"."+Playerside+".mobfield."+(ev.getSlot()+1)+".Def",main.cfg.getInt(Arena+"."+Playerside+".mobfield."+ev.getSlot()+".Def")+Staerke);
-			}
-			if(ev.getInventory().getName().contains("DEF -")){
-				
-
-				main.cfg.set(Arena+"."+Playerside+".mobfield."+ev.getSlot()+".Def",main.cfg.getInt(Arena+"."+Playerside+".mobfield."+ev.getSlot()+".Def")-Staerke);
-			}
-			if(ev.getInventory().getName().contains("ATK +")){
 			
-
-			main.cfg.set(Arena+"."+Playerside+".mobfield."+ev.getSlot()+".Def",main.cfg.getInt(Arena+"."+Playerside+".mobfield."+ev.getSlot()+".mobint")+Staerke);
+			if(MenueName.contains("DEF +")){
+				
+				pe.sendMessage("dein monster hat nun + "+(Staerke)+" Lp");
+				main.cfg.set(Arena+"."+Playerside+".mobfield."+mobfield+".Def",main.cfg.getInt(Arena+"."+Playerside+".mobfield."+mobfield+".Def")+Staerke);
+				
+			}
+			if(MenueName.contains("DEF -")){
+				
+				pe.sendMessage("dein monster hat nun - "+(Staerke)+" Lp");
+				main.cfg.set(Arena+"."+Playerside+".mobfield."+mobfield+".Def",main.cfg.getInt(Arena+"."+Playerside+".mobfield."+mobfield+".Def")-Staerke);
+			}
+			if(MenueName.contains("ATK +")){
+			
+				pe.sendMessage("dein monster hat nun + "+(Staerke)+" Atk" );
+			main.cfg.set(Arena+"."+Playerside+".mobfield."+mobfield+".mobint",main.cfg.getInt(Arena+"."+Playerside+".mobfield."+mobfield+".mobint")+Staerke);
+			pe.sendMessage(Arena+"."+Playerside+".mobfield."+mobfield+".Def zu "+main.cfg.getInt(Arena+"."+Playerside+".mobfield."+ev.getSlot()+".mobint")+Staerke);
 		}
-		if(ev.getInventory().getName().contains("ATK -")){
+		if(MenueName.contains("ATK -")){
 			
-
-			main.cfg.set(Arena+"."+Playerside+".mobfield."+ev.getSlot()+".Def",main.cfg.getInt(Arena+"."+Playerside+".mobfield."+ev.getSlot()+".mobint")-Staerke);
+			pe.sendMessage("dein monster hat nun - "+(Staerke)+" Atk" );
+			main.cfg.set(Arena+"."+Playerside+".mobfield."+mobfield+".mobint",main.cfg.getInt(Arena+"."+Playerside+".mobfield."+mobfield+".mobint")-Staerke);
+			
 		}
 			
 		ev.setCancelled(true);
 		pe.closeInventory();	
 			
-		}
 		
+		}
 		
 		
 		if(ev.getInventory().getName().contains("Ausrüsten")) {
 			if(!ev.getInventory().getName().contains("Trank")) {
+				
+				String Playerside = main.duell.getString(ev.getWhoClicked().getName()+".DuellSpieler");
+				String Arena =  Main.main.duell.getString(ev.getWhoClicked().getName()+".DuellArena");
+				
+				if(main.cfg.getString(Arena+".wizzone."+Playerside+"."+"catch.Name").contains("Armee")) {
+					if(main.cfg.getString(Arena+".wizzone."+Playerside+"."+"catch.Name").contains("Untot")) {
+						if(ev.getCurrentItem().getType().equals(Material.ZOMBIE_HEAD)) {
+							
+						}
+					}
+				}
+				
+				
 				ItemStack Glass = new ItemStack(Material.GLASS_PANE);
 				ItemMeta MGlass = Glass.getItemMeta();
 				MGlass.setDisplayName("Hier Platzieren");
 				Glass.setItemMeta(MGlass);
 				Inventory Wizzchose = Bukkit.createInventory(null, 9, "Wähle auf welchem Zauberfeld die Karte liegen soll");	
 				int count = 9 ;
-				String Playerside = main.duell.getString(ev.getWhoClicked().getName()+".DuellSpieler");
-				String Arena =  main.duell.getString(ev.getWhoClicked().getName()+".DuellArena");
+				
 				
 				while(count > 0) {
 					if (count == 5||count == 4||count == 3||count == 2||count == 1) {
@@ -155,6 +206,7 @@ public class CardGameEventListener implements Listener
 				main.cfg.set(main.duell.getString(ev.getWhoClicked().getName()+".DuellArena")+"."+main.duell.getString(ev.getWhoClicked().getName()+".DuellSpieler")+".wizzone."+count+".catch.Strongnes",Integer.parseInt(ev.getInventory().getName().substring(ev.getInventory().getName().length()-1)));
 				main.cfg.set(main.duell.getString(ev.getWhoClicked().getName()+".DuellArena")+"."+main.duell.getString(ev.getWhoClicked().getName()+".DuellSpieler")+".wizzone."+count+".catch.Name",main.cfg.getString(Arena+"."+count+".wizzone."+".catch.Name"));
 				main.cfg.set(main.duell.getString(ev.getWhoClicked().getName()+".DuellArena")+"."+main.duell.getString(ev.getWhoClicked().getName()+".DuellSpieler")+".wizzone.catch.GetSlot",(ev.getSlot()+1));
+				main.cfg.set(main.duell.getString(ev.getWhoClicked().getName()+".DuellArena")+"."+main.duell.getString(ev.getWhoClicked().getName()+".DuellSpieler")+".wizzone.catch.Menuname",(ev.getInventory().getName()));
 				ev.setCancelled(true);
 				pe.closeInventory();
 				pe.openInventory(Wizzchose);
@@ -163,7 +215,40 @@ public class CardGameEventListener implements Listener
 				String Arena =  Main.main.duell.getString(ev.getWhoClicked().getName()+".DuellArena");
 				String Mate = main.cfg.getString(Arena+"."+".wizzone."+Playerside+".catch.Material");
 				Material Mat = Material.getMaterial(Mate.toUpperCase());
-				pe.getInventory().remove(Mat);
+				
+				
+				
+				
+				ev.setCancelled(true);
+				int count2 = pe.getInventory().first(Mat);
+			
+				
+			
+					
+					
+				 if(pe.getInventory().getItem(count2).getType().name().equalsIgnoreCase(Mate)) {
+					if(pe.getInventory().getItem(count2).getAmount()-1 ==0) {
+						pe.getInventory().remove(Mat);
+						
+						
+					}
+					else {
+						
+						ItemStack p1Health = new ItemStack(Mat,pe.getInventory().getItem(count2).getAmount()-1);
+				    	SkullMeta p1Meta = (SkullMeta) p1Health.getItemMeta();
+				    	p1Meta.setDisplayName(pe.getInventory().getItem(count2).getItemMeta().getDisplayName());
+				    	p1Health.setItemMeta(p1Meta);
+				    	int Slot = count2;
+				    	pe.getInventory().remove(Mat);
+						pe.getInventory().setItem(Slot, p1Health);
+					
+					
+						
+					}
+				
+				
+				}
+				
 			
 				String s = ""+ev.getInventory().getName().charAt(ev.getInventory().getName().length()-1);
 				pe.sendMessage(s);
@@ -259,25 +344,28 @@ public class CardGameEventListener implements Listener
 		if(MonsterAtack.equalsIgnoreCase("creeper"))	{
 			main.cfg.set(Arena2+"."+p2Playerside+".mobfield."+p2Mobfield+".Def",0);
 			main.cfg.set(Arena2+"."+p1Playerside+".mobfield."+pMobfield+".Def",0);
+			
+			
 		}else if(MonsterAtack.equalsIgnoreCase("Skeleton"))	{
 			
 			
 			if(!p2Monster.equalsIgnoreCase("Skeleton"))	{
-			int Counter = main.cfg.getInt(Arena2+"."+p2Playerside+".mobfield."+p2Mobfield+".Def")-1;
+			int Counter = main.cfg.getInt(Arena2+"."+p2Playerside+".mobfield."+p2Mobfield+".Def")-main.cfg.getInt(Arena2+"."+p1Playerside+".mobfield."+pMobfield+".mobint")-1;
+			pe.sendMessage("Schaden "+Counter);
 			main.cfg.set(Arena2+"."+p2Playerside+".mobfield."+p2Mobfield+".Def",Counter);
 			}else {
-				int Counter = main.cfg.getInt(Arena2+"."+p1Playerside+".mobfield."+pMobfield+".Def")-1;
-				main.cfg.set(Arena2+"."+p1Playerside+".mobfield."+pMobfield+".Def",Counter);	
-				int Counter2 = main.cfg.getInt(Arena2+"."+p2Playerside+".mobfield."+p2Mobfield+".Def")-2;
-				main.cfg.set(Arena2+"."+p2Playerside+".mobfield."+p2Mobfield+".Def",Counter2);
+			int Counter = main.cfg.getInt(Arena2+"."+p2Playerside+".mobfield."+p2Mobfield+".Def")-main.cfg.getInt(Arena2+"."+p1Playerside+".mobfield."+pMobfield+".mobint");
+			main.cfg.set(Arena2+"."+p2Playerside+".mobfield."+p2Mobfield+".Def",Counter);
+			pe.sendMessage("Schaden "+Counter);
 			}
 		}else if(MonsterAtack.equalsIgnoreCase("Zombie"))	{
 			
 			
 			
-				int Counter = main.cfg.getInt(Arena2+"."+p1Playerside+".mobfield."+pMobfield+".Def")-1;
+				int Counter = main.cfg.getInt(Arena2+"."+p1Playerside+".mobfield."+pMobfield+".Def")-main.cfg.getInt(Arena2+"."+p2Playerside+".mobfield."+p2Mobfield+".mobint")/2;
+				pe.sendMessage("Schaden "+Counter);
 				main.cfg.set(Arena2+"."+p1Playerside+".mobfield."+pMobfield+".Def",Counter);	
-				int Counter2 = main.cfg.getInt(Arena2+"."+p2Playerside+".mobfield."+p2Mobfield+".Def")-2;
+				int Counter2 = main.cfg.getInt(Arena2+"."+p2Playerside+".mobfield."+p2Mobfield+".Def")-main.cfg.getInt(Arena2+"."+p1Playerside+".mobfield."+pMobfield+".mobint");
 				main.cfg.set(Arena2+"."+p2Playerside+".mobfield."+p2Mobfield+".Def",Counter2);
 			
 		}
@@ -285,7 +373,7 @@ public class CardGameEventListener implements Listener
 		if(main.cfg.getInt(Arena2+"."+p1Playerside+".mobfield."+pMobfield+".Def") <= 0 ) {
 			
 			
-			Game.Spawner.deSummon(p1Playerside, pMobfield, Arena2, (Player) ev.getWhoClicked());
+			Game.Spawner.deSummon(p1Playerside, pMobfield, Arena2);
 		
 			if(pe.getHealth()-2 > 0) {
 			double p1Health = pe.getHealth()-2;
@@ -299,7 +387,7 @@ public class CardGameEventListener implements Listener
 		if(main.cfg.getInt(Arena2+"."+p2Playerside+".mobfield."+p2Mobfield+".Def") <= 0) {
 	
 			
-			Game.Spawner.deSummon(p2Playerside, p2Mobfield, Arena2, (Player) ev.getWhoClicked());
+			Game.Spawner.deSummon(p2Playerside, p2Mobfield, Arena2);
 			if( Bukkit.getPlayer(main.duell.getString(Arena2+"."+p2Playerside)).getHealth()-4 >0) {
 			double p2Health = Bukkit.getPlayer(main.duell.getString(Arena2+"."+p2Playerside)).getHealth()-4;
 			Bukkit.getPlayer(main.duell.getString(Arena2+"."+p2Playerside)).setHealth(p2Health);
@@ -473,7 +561,7 @@ public class CardGameEventListener implements Listener
 							if(ev.getCurrentItem().getItemMeta().getDisplayName().equalsIgnoreCase("Creeper")||ev.getCurrentItem().getItemMeta().getDisplayName().equalsIgnoreCase("Skeleton")||ev.getCurrentItem().getItemMeta().getDisplayName().equalsIgnoreCase("Zombie")){
 								if(!ev.getInventory().getName().contains("Atack")) {
 						Inventory Atack = Bukkit.createInventory(null, 9, "Duell Atack with "+ev.getCurrentItem().getItemMeta().getDisplayName()+" from Field "+ ev.getSlot());	
-							
+							boolean directAtack = true;
 						int Count = 9;
 						String Arena =  main.duell.getString(pe.getName()+".DuellArena");
 						while(Count > 0) {
@@ -482,6 +570,7 @@ public class CardGameEventListener implements Listener
 							if(Count == 4 || Count == 3 || Count == 2 || Count == 1 || Count == 0) {
 								int p2mobzone = Count +1;
 								if(main.cfg.getBoolean(Arena+".p2"+".mobfield."+p2mobzone+".isinuse")) {
+									directAtack = false;
 									if(main.cfg.getString(Arena+".p2"+".mobfield."+p2mobzone+".mobname").equalsIgnoreCase("Verdekte Karte")) {
 										
 										ItemStack Skull = new ItemStack(Material.ACACIA_WOOD , 1);
@@ -496,7 +585,7 @@ public class CardGameEventListener implements Listener
 									    	SkullMeta SMeta = (SkullMeta) Skull.getItemMeta(); 
 									    	SMeta.setDisplayName(main.cfg.getString(Arena+".p2"+".mobfield."+p2mobzone+".mobname"));
 									    	ArrayList<String> lore = new ArrayList<String>();
-								    		lore.add("4");
+									    	lore.add(main.cfg.getString(Arena+"."+"p1"+".mobfield."+p2mobzone+".mobint"));
 								    		lore.add(Integer.toString(main.cfg.getInt(Arena+"."+"p2.mobfield."+p2mobzone+".Def")));
 								    		SMeta.setLore(lore);
 									    	Skull.setItemMeta(SMeta);
@@ -509,7 +598,7 @@ public class CardGameEventListener implements Listener
 									    	SkullMeta SMeta = (SkullMeta) Skull.getItemMeta(); 
 									    	SMeta.setDisplayName(main.cfg.getString(Arena+".p2"+".mobfield."+p2mobzone+".mobname"));
 								    		ArrayList<String> lore = new ArrayList<String>();
-								    		lore.add("1");
+								    		lore.add(main.cfg.getString(Arena+"."+"p1"+".mobfield."+p2mobzone+".mobint"));
 								    		lore.add(Integer.toString(main.cfg.getInt(Arena+"."+"p2.mobfield."+p2mobzone+".Def")));
 								    		SMeta.setLore(lore);
 								    		Skull.setItemMeta(SMeta);
@@ -519,7 +608,7 @@ public class CardGameEventListener implements Listener
 									    	SkullMeta SMeta = (SkullMeta) Skull.getItemMeta(); 
 									    	SMeta.setDisplayName(main.cfg.getString(Arena+".p2"+".mobfield."+p2mobzone+".mobname"));
 								    		ArrayList<String> lore = new ArrayList<String>();
-								    		lore.add("2");
+								    		lore.add(main.cfg.getString(Arena+"."+"p1"+".mobfield."+p2mobzone+".mobint"));
 								    		lore.add(Integer.toString(main.cfg.getInt(Arena+"."+"p2.mobfield."+p2mobzone+".Def")));
 								    		SMeta.setLore(lore);
 								    		Skull.setItemMeta(SMeta);
@@ -539,6 +628,15 @@ public class CardGameEventListener implements Listener
 						
 						Player p = (Player) ev.getWhoClicked(); 
 						if(Main.main.duell.getString(p.getName()+".Phase").equalsIgnoreCase("Main")||Main.main.duell.getString(p.getName()+".Phase").equalsIgnoreCase("Main2")){
+							if(directAtack) {
+								ItemStack Skull = new ItemStack(Material.PLAYER_HEAD , 1);
+						    	SkullMeta SMeta = (SkullMeta) Skull.getItemMeta(); 
+						    	SMeta.setDisplayName("Direkt angriff an"+main.duell.getString(Arena+".p2"));
+						    	SMeta.setOwningPlayer(Bukkit.getPlayer(main.duell.getString(Arena+".p2")));
+					    	
+					    		Skull.setItemMeta(SMeta);
+					    		Atack.setItem(1,Skull);
+							}
 						ev.getWhoClicked().openInventory(Atack);
 						}
 							}
@@ -560,12 +658,14 @@ public class CardGameEventListener implements Listener
 								
 								int Count = 9;
 								String Arena =  main.duell.getString(pe.getName()+".DuellArena");
+								boolean directAtack = true;
 								while(Count > 0) {
 									
 								Count=Count-1;
 									if(Count == 4 || Count == 3 || Count == 2 || Count == 1 || Count == 0) {
 										int p1mobzone = Count +1;
 										if(main.cfg.getBoolean(Arena+".p1"+".mobfield."+p1mobzone+".isinuse")) {
+											directAtack = false;
 											if(main.cfg.getString(Arena+".p1"+".mobfield."+p1mobzone+".mobname").equalsIgnoreCase("Verdekte Karte")) {
 												
 												ItemStack Skull = new ItemStack(Material.ACACIA_WOOD , 1);
@@ -580,7 +680,7 @@ public class CardGameEventListener implements Listener
 											    	SkullMeta SMeta = (SkullMeta) Skull.getItemMeta(); 
 											    	SMeta.setDisplayName(main.cfg.getString(Arena+".p1"+".mobfield."+p1mobzone+".mobname"));
 										    		ArrayList<String> lore = new ArrayList<String>();
-										    		lore.add("1");
+										    		lore.add(main.cfg.getString(Arena+"."+"p1"+".mobfield."+p1mobzone+".mobint"));
 										    		lore.add(Integer.toString(main.cfg.getInt(Arena+"."+"p1.mobfield."+p1mobzone+".Def")));
 										    		SMeta.setLore(lore);
 										    		Skull.setItemMeta(SMeta);
@@ -590,7 +690,7 @@ public class CardGameEventListener implements Listener
 											    	SkullMeta SMeta = (SkullMeta) Skull.getItemMeta(); 
 											    	SMeta.setDisplayName(main.cfg.getString(Arena+".p1"+".mobfield."+p1mobzone+".mobname"));
 										    		ArrayList<String> lore = new ArrayList<String>();
-										    		lore.add("2");
+										    		lore.add(main.cfg.getString(Arena+"."+"p1"+".mobfield."+p1mobzone+".mobint"));
 										    		lore.add(Integer.toString(main.cfg.getInt(Arena+"."+"p1.mobfield."+p1mobzone+".Def")));
 										    		SMeta.setLore(lore);
 										    		Skull.setItemMeta(SMeta);
@@ -601,7 +701,7 @@ public class CardGameEventListener implements Listener
 											    	SkullMeta SMeta = (SkullMeta) Skull.getItemMeta(); 
 											    	SMeta.setDisplayName(main.cfg.getString(Arena+".p1"+".mobfield."+p1mobzone+".mobname"));
 										    		ArrayList<String> lore = new ArrayList<String>();
-										    		lore.add("1");
+										    		lore.add(main.cfg.getString(Arena+"."+"p1"+".mobfield."+p1mobzone+".mobint"));
 										    		lore.add(Integer.toString(main.cfg.getInt(Arena+"."+"p1.mobfield."+p1mobzone+".Def")));
 										    		SMeta.setLore(lore);
 										    		Skull.setItemMeta(SMeta);
@@ -619,7 +719,18 @@ public class CardGameEventListener implements Listener
 								}//Ende der While
 								Player p = (Player) ev.getWhoClicked(); 
 								if(Main.main.duell.getString(p.getName()+".Phase").equalsIgnoreCase("Main")||Main.main.duell.getString(p.getName()+".Phase").equalsIgnoreCase("Main2")){
-								ev.getWhoClicked().openInventory(Atack);
+								
+									if(directAtack) {
+										ItemStack Skull = new ItemStack(Material.PLAYER_HEAD , 1);
+								    	SkullMeta SMeta = (SkullMeta) Skull.getItemMeta(); 
+								    	SMeta.setDisplayName("Direkt angriff an"+main.duell.getString(Arena+".p1"));
+								    	SMeta.setOwningPlayer(Bukkit.getPlayer(main.duell.getString(Arena+".p1")));
+							    	
+							    		Skull.setItemMeta(SMeta);
+							    		Atack.setItem(1,Skull);
+									}
+									
+									ev.getWhoClicked().openInventory(Atack);
 								}
 							}
 								}
@@ -652,6 +763,7 @@ public class CardGameEventListener implements Listener
 }
 	if(ev.getCurrentItem().getItemMeta().getDisplayName().equalsIgnoreCase("Runde Beenden")){
 		pe.sendMessage("Runde Wird Beendet");
+		
 		pe.closeInventory();
 		if(main.duell.getString(main.duell.getString(Arena2+".p1")+".Phase")=="Main"){
 			main.duell.set(main.duell.getString(Arena2+".p1")+".Phase", "Enemie");	
@@ -999,12 +1111,13 @@ public void PlayerUseEvent(PlayerInteractEvent ev) {
 }
 }
 @EventHandler
-public void PlayerEat(FoodLevelChangeEvent ev) {
-	if(ev.getEntity() instanceof Player) {
-		Player p = (Player) ev.getEntity();
-		if(main.cfg.getBoolean(ev.getEntity().getName()+".isinGame")) {
+public void PlayerEat(PlayerItemConsumeEvent ev) {
+
+		Player p = (Player) ev.getPlayer();
+		if(main.duell.getBoolean(p.getName()+".DuellAktiv")) {
+			p.sendMessage("Keks gegessen Erkannt");
 			Main.main.duell.set(p.getName()+".Cards.Count", Main.main.duell.getInt(p.getName()+".Cards.Count")-1);
-		}
+		
 	}
 }
 
@@ -1024,17 +1137,23 @@ Player p = ev.getEntity();
 		Main.main.rereload();
 	}
 	if(p2Name.equalsIgnoreCase(p.getName())||p1Name.equalsIgnoreCase(p.getName())) {
-		Spawner.deSummon("p1", 1, Arena, Bukkit.getPlayer(p1Name));
-		Spawner.deSummon("p1", 2, Arena, Bukkit.getPlayer(p1Name));
-		Spawner.deSummon("p1", 3, Arena, Bukkit.getPlayer(p1Name));
-		Spawner.deSummon("p1", 4, Arena, Bukkit.getPlayer(p1Name));
-		Spawner.deSummon("p1", 5, Arena, Bukkit.getPlayer(p1Name));
+		Spawner.deSummon("p1", 1, Arena);
+		Spawner.deSummon("p1", 2, Arena);
+		Spawner.deSummon("p1", 3, Arena);
+		Spawner.deSummon("p1", 4, Arena);
+		Spawner.deSummon("p1", 5, Arena);
+		main.duell.set(p1Name+".DuellAnfrage", false);
+		main.duell.set(p2Name+".DuellAnfrage", false);
+		main.duell.set(p2Name+".Cards.Count", 0);
+		main.duell.set(p1Name+".Cards.Count", 0);
+		main.duell.set(Arena+".isinUse", false);
 		
-		Spawner.deSummon("p2", 1, Arena, Bukkit.getPlayer(p2Name));
-		Spawner.deSummon("p2", 2, Arena, Bukkit.getPlayer(p2Name));
-		Spawner.deSummon("p2", 3, Arena, Bukkit.getPlayer(p2Name));
-		Spawner.deSummon("p2", 4, Arena, Bukkit.getPlayer(p2Name));
-		Spawner.deSummon("p2", 5, Arena, Bukkit.getPlayer(p2Name));
+		Spawner.deSummon("p2", 1, Arena);
+		Spawner.deSummon("p2", 2, Arena);
+		Spawner.deSummon("p2", 3, Arena);
+		Spawner.deSummon("p2", 4, Arena);
+		Spawner.deSummon("p2", 5, Arena);
+		
 		
 	}
 	

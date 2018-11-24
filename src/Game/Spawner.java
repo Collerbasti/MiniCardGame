@@ -71,7 +71,7 @@ public class Spawner {
 		
 		Main.main.duell.set(p.getName()+".Cards.Count", Count);
 	if(main.duell.getBoolean(p.getName()+".Cards.Modus")) {
-		BlockSpawner(Arena, mobfield, Arena, p, false);
+		BlockSpawner(Arena, mobfield, Arena, false, true);
 		main.cfg.set(Arena+"."+Playerside+".mobfield."+mobfield+".Karte",Mob);
 		
 		
@@ -152,19 +152,30 @@ public class Spawner {
 		main.arena.set(Arena+"."+entity.getCustomName(), entity.getUniqueId());
 		main.cfg.set(Arena+"."+Playerside+".mobfield."+mobfield+".isinuse",true);
 		main.cfg.set(Arena+"."+Playerside+".mobfield."+mobfield+".mobname","Skeleton");
-		main.cfg.set(Arena+"."+Playerside+".mobfield."+mobfield+".mobint",0);
+		main.cfg.set(Arena+"."+Playerside+".mobfield."+mobfield+".mobint",1);
 		main.cfg.set(Arena+"."+Playerside+".mobfield."+mobfield+".Def",4);
 	}
 	
 	}
-	public static void deSummon(String Playerside , int mobfield , String Arena , Player p ) {
+	public static void deSummon(String Playerside , int mobfield , String Arena ) {
 		
 		
-		for(Entity e : p.getWorld().getEntities()) {
+		for(Entity e : Bukkit.getWorld(main.arena.getString(Arena+"."+Playerside+".Wizzone."+mobfield+".loc.World")).getEntities()) {
 			if (e instanceof LivingEntity && !(e instanceof Player)) {
 				
 				if(e.getUniqueId().equals(main.arena.get(Arena+"."+mobfield+" "+Playerside))) {
-					p.sendMessage(Playerside+" "+mobfield);
+					if(main.cfg.getBoolean(Arena+"."+Playerside+".mobfield."+mobfield+".hasExtras")) {
+						int count = main.cfg.getInt(Arena+"."+Playerside+".mobfield."+mobfield+".Extras.count");
+						while(count!=0) {
+							count = count -1;
+							
+							int mobfieldB = main.cfg.getInt(Arena+"."+Playerside+".mobfield."+mobfield+".Extras."+count+".mobfield");
+							Bukkit.getPlayer(main.duell.getString(Arena+"."+Playerside)).sendMessage(Playerside+ mobfieldB+ Arena );
+							BlockSpawner(Playerside, mobfieldB, Arena, true, false );
+								
+						}
+						
+					}
 					main.cfg.set(Arena+"."+Playerside+".mobfield."+mobfield+".isinuse",false);
 					e.remove();
 				}
@@ -173,10 +184,10 @@ public class Spawner {
 	}
 		
 
-	public static void BlockSpawner(String Playerside , int mobfield , String Arena , Player p , boolean wizzone) {
+	public static void BlockSpawner(String Playerside , int mobfield , String Arena  , boolean wizzone, boolean Setzen ) {
 			if(wizzone) {
 			
-			if(!(main.cfg.getBoolean(Arena+"."+Playerside+".wizzone."+mobfield+".isinuse"))) {
+		
 			Double x = main.arena.getDouble(Arena+"."+Playerside+".Wizzone."+mobfield+".loc.X");
 			Double y = main.arena.getDouble(Arena+"."+Playerside+".Wizzone."+mobfield+".loc.Y");
 			Double z = main.arena.getDouble(Arena+"."+Playerside+".Wizzone."+mobfield+".loc.Z");
@@ -184,26 +195,23 @@ public class Spawner {
 			Float pitch = (float) main.arena.getDouble(Arena+"."+Playerside+".Wizzone."+mobfield+".loc.Pitch");
 			org.bukkit.World w = Bukkit.getWorld(main.arena.getString(Arena+"."+Playerside+".Wizzone."+mobfield+".loc.World"));
 			Location Spawn = new Location(w,x,y,z,yaw,pitch);
+			
+			if(Setzen) {
 			w.getBlockAt(Spawn).setType(Material.ACACIA_WOOD);
 			main.cfg.set(Arena+"."+Playerside+".wizzone."+mobfield+".isinuse",true);
 			main.cfg.set(Arena+"."+Playerside+".wizzone."+mobfield+".mobname","Verdekte Karte");
 			main.cfg.set(Arena+"."+Playerside+".wizzone."+mobfield+".mobint",0);
+			}else {
+				w.getBlockAt(Spawn).setType(Material.AIR);
+				System.out.println("Block wird gelöscht");
+				
+				main.cfg.set(Arena+"."+Playerside+".wizzone."+mobfield+".isinuse",false);
+				main.cfg.set(Arena+"."+Playerside+".wizzone."+mobfield+".mobname","none");
+				main.cfg.set(Arena+"."+Playerside+".wizzone."+mobfield+".mobint",0);
 			}
-		}else {
 			
-			if(!(main.cfg.getBoolean(Arena+"."+Playerside+".mobfield."+mobfield+".isinuse"))) {
-			Double x = main.arena.getDouble(Arena+"."+Playerside+".Mobzone."+mobfield+".loc.X");
-			Double y = main.arena.getDouble(Arena+"."+Playerside+".Mobzone."+mobfield+".loc.Y");
-			Double z = main.arena.getDouble(Arena+"."+Playerside+".Mobzone."+mobfield+".loc.Z");
-			Float yaw = (float) main.arena.getDouble(Arena+"."+Playerside+".Mobzone."+mobfield+".loc.Yaw");
-			Float pitch = (float) main.arena.getDouble(Arena+"."+Playerside+".Mobzone."+mobfield+".loc.Pitch");
-			org.bukkit.World w = Bukkit.getWorld(main.arena.getString(Arena+"."+Playerside+".Mobzone."+mobfield+".loc.World"));
-			Location Spawn = new Location(w,x,y,z,yaw,pitch);
-			w.getBlockAt(Spawn).setType(Material.ACACIA_WOOD);
-			main.cfg.set(Arena+"."+Playerside+".mobfield."+mobfield+".isinuse",true);
-			main.cfg.set(Arena+"."+Playerside+".mobfield."+mobfield+".mobname","Verdekte Karte");
-			main.cfg.set(Arena+"."+Playerside+".mobfield."+mobfield+".mobint",0);
-			}
+			
+	
 		}
 	}
 	

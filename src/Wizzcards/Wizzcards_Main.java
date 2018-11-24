@@ -15,6 +15,10 @@ public class Wizzcards_Main {
 		WizzCards.add("Sword_Of_Destiny");
 		WizzCards.add("Trank_der_Heilung");
 		WizzCards.add("Kecks");
+		WizzCards.add("Armee_der_Untoten");
+		WizzCards.add("Fleisch");
+		WizzCards.add("Trank_des_Glücks");
+		
 
 		return WizzCards;
 	}

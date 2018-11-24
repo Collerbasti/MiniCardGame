@@ -34,7 +34,7 @@ public class CMDTestSummon implements CommandExecutor {
 			
 			if(args[3].equalsIgnoreCase("Block")) {
 				p.sendMessage("Block wird versucht zu setzen 1");
-				Spawner.BlockSpawner(args[0], Integer.parseInt(args[1]), args[2], p, Boolean.parseBoolean(args[4]));
+				Spawner.BlockSpawner(args[0], Integer.parseInt(args[1]), args[2],  Boolean.parseBoolean(args[4]),true);
 				
 			}
 			

@@ -150,6 +150,10 @@ public class CMDDuell implements CommandExecutor {
 									p2.setGameMode(GameMode.ADVENTURE);
 									p1.setHealth(20);
 									p2.setHealth(20);
+									p2.setFoodLevel(20);
+									p1.setFoodLevel(20);
+									Main.main.duell.set(p1.getName()+".DuellAktiv", true);
+									Main.main.duell.set(p2.getName()+".DuellAktiv", true);
 									
 									Main.main.duell.set(p1.getName()+".Phase", "Main");
 									Main.main.duell.set(p2.getName()+".Phase", "Enemie");

@@ -1,15 +1,22 @@
 package Main;
 
 import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+
 
 import org.bukkit.Bukkit;
+import org.bukkit.boss.BarColor;
+import org.bukkit.boss.BarFlag;
+import org.bukkit.boss.BarStyle;
+import org.bukkit.boss.BossBar;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scoreboard.DisplaySlot;
+import org.bukkit.scoreboard.Objective;
+import org.bukkit.scoreboard.Scoreboard;
+import org.bukkit.scoreboard.ScoreboardManager;
 
 import Game.Spawner;
 import Main.CardGameEventListener;
@@ -17,6 +24,7 @@ import commands.CMDCreateArena;
 import commands.CMDDuell;
 import commands.CMDTestSummon;
 import commands.CMDnextPhase;
+
 
 public class main extends JavaPlugin implements Listener {
 	
@@ -26,6 +34,85 @@ public class main extends JavaPlugin implements Listener {
 	public static FileConfiguration arena;
 	public static File Duell;
 	public static FileConfiguration duell;
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+private void StartTimer() {
+		
+
+	
+	
+	
+	
+	
+	
+	
+	
+	Bukkit.getScheduler().scheduleSyncRepeatingTask( null, new Runnable() {
+		@Override
+	public void run() {   
+			for(Player p1 : Bukkit.getOnlinePlayers()) {
+			
+				
+				p1.sendMessage("Hallo Player");
+				if(main.duell.getBoolean(p1.getName()+".DuellAktiv")) {
+				String NameGegner= "Fehler";
+				int wert = main.duell.getInt(p1.getName()+".DuellTime");
+				if(wert == 0) {
+					wert = 60;
+				}
+			if(main.duell.getString(p1.getName()+".DuellSpieler").equals("p1")) {
+				NameGegner = main.duell.getString(main.duell.getString(p1.getName()+".DuellArena")+".p2") ;
+			}else {
+				NameGegner = main.duell.getString(main.duell.getString(p1.getName()+".DuellArena")+".p1") ;
+				
+			}
+			Player p2 = Bukkit.getPlayer(NameGegner);
+			ScoreboardManager sM = Bukkit.getScoreboardManager(); 
+			Scoreboard sb = sM.getNewScoreboard();
+			Objective o = sb.registerNewObjective("SidePanel", "Dummy");
+			o.setDisplaySlot(DisplaySlot.SIDEBAR);
+			
+			o.setDisplayName("Duell gegen "+NameGegner);
+			
+			
+			
+			
+			if(main.duell.getString(p1.getName()+".DuellSpieler").equals("p1")) {
+				o.getScore("Deine Runde endet in ").setScore(wert);
+			}else {
+				o.getScore("Runde endet in ").setScore(wert);
+				
+			}
+			p1.setScoreboard(sb);;		
+			
+				
+			}	
+			}	
+		
+		}
+	}, 20*10, 20*10);
+	
+	
+	
+	
+    	
+    		
+    	
+    	
+    	}
+	
+	
 	
 	
 	@Override	
@@ -51,21 +138,19 @@ public class main extends JavaPlugin implements Listener {
 		System.out.println("MiniCardGane Loading");
 		
 		for(String Arenas : Main.main.arena.getStringList("Arena.list" )) {
-    		String p1Name = main.duell.getString(Arenas+".p1");
-    		String p2Name = main.duell.getString(Arenas+".p2");
-		Spawner.deSummon("p1", 1, Arenas, Bukkit.getPlayer(p1Name));
-		Spawner.deSummon("p1", 2, Arenas, Bukkit.getPlayer(p1Name));
-		Spawner.deSummon("p1", 3, Arenas, Bukkit.getPlayer(p1Name));
-		Spawner.deSummon("p1", 4, Arenas, Bukkit.getPlayer(p1Name));
-		Spawner.deSummon("p1", 5, Arenas, Bukkit.getPlayer(p1Name));
+		Spawner.deSummon("p1", 1, Arenas);
+		Spawner.deSummon("p1", 2, Arenas);
+		Spawner.deSummon("p1", 3, Arenas);
+		Spawner.deSummon("p1", 4, Arenas);
+		Spawner.deSummon("p1", 5, Arenas);
 		
-		Spawner.deSummon("p2", 1, Arenas, Bukkit.getPlayer(p2Name));
-		Spawner.deSummon("p2", 2, Arenas, Bukkit.getPlayer(p2Name));
-		Spawner.deSummon("p2", 3, Arenas, Bukkit.getPlayer(p2Name));
-		Spawner.deSummon("p2", 4, Arenas, Bukkit.getPlayer(p2Name));
-		Spawner.deSummon("p2", 5, Arenas, Bukkit.getPlayer(p2Name));
+		Spawner.deSummon("p2", 1, Arenas);
+		Spawner.deSummon("p2", 2, Arenas);
+		Spawner.deSummon("p2", 3, Arenas);
+		Spawner.deSummon("p2", 4, Arenas);
+		Spawner.deSummon("p2", 5, Arenas);
     	}
-    	
+		StartTimer();
 	}
 	static public void rereload() {
 		
@@ -80,19 +165,34 @@ public class main extends JavaPlugin implements Listener {
 	public void onDisable() {
 		
 		for(String Arenas : Main.main.arena.getStringList("Arena.list" )) {
-    		String p1Name = main.duell.getString(Arenas+".p1");
-    		String p2Name = main.duell.getString(Arenas+".p2");
-		Spawner.deSummon("p1", 1, Arenas, Bukkit.getPlayer(p1Name));
-		Spawner.deSummon("p1", 2, Arenas, Bukkit.getPlayer(p1Name));
-		Spawner.deSummon("p1", 3, Arenas, Bukkit.getPlayer(p1Name));
-		Spawner.deSummon("p1", 4, Arenas, Bukkit.getPlayer(p1Name));
-		Spawner.deSummon("p1", 5, Arenas, Bukkit.getPlayer(p1Name));
+
+    		
+    		Spawner.BlockSpawner("p1", 1, Arenas,true, false);
+    		Spawner.BlockSpawner("p1", 2, Arenas,true, false);
+    		Spawner.BlockSpawner("p1", 3, Arenas,true, false);
+    		Spawner.BlockSpawner("p1", 4, Arenas,true, false);
+    		Spawner.BlockSpawner("p1", 5, Arenas,true, false);
+    		
+    		Spawner.BlockSpawner("p2", 1, Arenas,true, false);
+    		Spawner.BlockSpawner("p2", 2, Arenas,true, false);
+    		Spawner.BlockSpawner("p2", 3, Arenas,true, false);
+    		Spawner.BlockSpawner("p2", 4, Arenas,true, false);
+    		Spawner.BlockSpawner("p2", 5, Arenas,true, false);
+    		
+    		
+		Spawner.deSummon("p1", 1, Arenas);
+		Spawner.deSummon("p1", 2, Arenas);
+		Spawner.deSummon("p1", 3, Arenas);
+		Spawner.deSummon("p1", 4, Arenas);
+		Spawner.deSummon("p1", 5, Arenas);
 		
-		Spawner.deSummon("p2", 1, Arenas, Bukkit.getPlayer(p2Name));
-		Spawner.deSummon("p2", 2, Arenas, Bukkit.getPlayer(p2Name));
-		Spawner.deSummon("p2", 3, Arenas, Bukkit.getPlayer(p2Name));
-		Spawner.deSummon("p2", 4, Arenas, Bukkit.getPlayer(p2Name));
-		Spawner.deSummon("p2", 5, Arenas, Bukkit.getPlayer(p2Name));
+		Spawner.deSummon("p2", 1, Arenas);
+		Spawner.deSummon("p2", 2, Arenas);
+		Spawner.deSummon("p2", 3, Arenas);
+		Spawner.deSummon("p2", 4, Arenas);
+		Spawner.deSummon("p2", 5, Arenas);
+		
+
     	}
 		
 	}

@@ -58,7 +58,7 @@ public class DrawCard {
 				String Karte = Wizzcards.Wizzcards_Main.listOfAllCards().get(r3-1);
 				
 				Wizzcards.Karten.Karte(p.getName(), Karte);
-				
+				Count =Count+1;		
 				
 			}
 			Main.main.duell.set(p.getName()+".Cards.Count", Count);
