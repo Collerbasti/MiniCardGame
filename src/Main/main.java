@@ -131,8 +131,10 @@ private void StartTimer() {
 		
 		main.Config = new File("plugins/MiniCardGame","Cfg.yml");
     	main.cfg = YamlConfiguration.loadConfiguration(main.Config);
+    	
     	main.Arena = new File("plugins/MiniCardGame","Arenas.yml");
     	main.arena = YamlConfiguration.loadConfiguration(main.Arena);
+    	
     	main.Duell = new File("plugins/MiniCardGame","Duell.yml");
     	main.duell = YamlConfiguration.loadConfiguration(main.Duell);
 		System.out.println("MiniCardGane Loading");
@@ -151,12 +153,13 @@ private void StartTimer() {
 		Spawner.deSummon("p2", 5, Arenas);
     	}
 		StartTimer();
+		rereload();
 	}
 	static public void rereload() {
 		
     	main.cfg = YamlConfiguration.loadConfiguration(main.Config);
     	
-   	
+    	main.arena = YamlConfiguration.loadConfiguration(main.Arena);
     	main.duell = YamlConfiguration.loadConfiguration(main.Duell);
  
     	

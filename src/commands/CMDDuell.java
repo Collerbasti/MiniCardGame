@@ -103,6 +103,8 @@ public class CMDDuell implements CommandExecutor {
 					
 					p1.sendMessage(p2.getName()+": Es ist Zeit für ein Duell");
 					p2.sendMessage(p1.getName()+": Es ist Zeit für ein Duell");
+					main.duell.set(p2.getName()+".Cards.Count", 0);
+					main.duell.set(p1.getName()+".Cards.Count", 0);
 					Double x = Main.main.arena.getDouble(Main.main.duell.getString(p1.getName()+".DuellArena")+".p1.loc.X");
 							Double y = Main.main.arena.getDouble(Main.main.duell.getString(p1.getName()+".DuellArena")+".p1.loc.Y");
 							Double z = Main.main.arena.getDouble(Main.main.duell.getString(p1.getName()+".DuellArena")+".p1.loc.Z");
@@ -187,6 +189,12 @@ public class CMDDuell implements CommandExecutor {
 				}else if(args[0].equalsIgnoreCase("sichern")) {
 					try {
 						main.duell.save(main.Duell);
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					try {
+						main.arena.save(main.Arena);
 					} catch (IOException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();

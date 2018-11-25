@@ -112,7 +112,7 @@ public class CardGameEventListener implements Listener
 				else {
 					
 				  	ItemStack p1Health = new ItemStack(Mat,pe.getInventory().getItem(count2).getAmount()-1);
-			    	SkullMeta p1Meta = (SkullMeta) p1Health.getItemMeta();
+			    	ItemMeta p1Meta = p1Health.getItemMeta();
 			    	p1Meta.setDisplayName(pe.getInventory().getItem(count2).getItemMeta().getDisplayName());
 			    	p1Health.setItemMeta(p1Meta);
 			    	int Slot = count2;
@@ -221,9 +221,9 @@ public class CardGameEventListener implements Listener
 				
 				ev.setCancelled(true);
 				int count2 = pe.getInventory().first(Mat);
-			
+				int Count3 = pe.getInventory().all(Mat).size();
 				
-			
+				if(Count3 == 1) {
 					
 					
 				 if(pe.getInventory().getItem(count2).getType().name().equalsIgnoreCase(Mate)) {
@@ -235,7 +235,7 @@ public class CardGameEventListener implements Listener
 					else {
 						
 						ItemStack p1Health = new ItemStack(Mat,pe.getInventory().getItem(count2).getAmount()-1);
-				    	SkullMeta p1Meta = (SkullMeta) p1Health.getItemMeta();
+						ItemMeta p1Meta =  p1Health.getItemMeta();
 				    	p1Meta.setDisplayName(pe.getInventory().getItem(count2).getItemMeta().getDisplayName());
 				    	p1Health.setItemMeta(p1Meta);
 				    	int Slot = count2;
@@ -248,7 +248,7 @@ public class CardGameEventListener implements Listener
 				
 				
 				}
-				
+				}
 			
 				String s = ""+ev.getInventory().getName().charAt(ev.getInventory().getName().length()-1);
 				pe.sendMessage(s);
@@ -301,7 +301,7 @@ public class CardGameEventListener implements Listener
 		
 		
 		if(ev.getInventory().getName().contains("Atack")){
-			if(ev.getCurrentItem().getItemMeta().getDisplayName().equalsIgnoreCase("Creeper")||ev.getCurrentItem().getItemMeta().getDisplayName().equalsIgnoreCase("Zombie")||ev.getCurrentItem().getItemMeta().getDisplayName().equalsIgnoreCase("Skeleton")){
+			if(ev.getCurrentItem().getItemMeta().getDisplayName().contains("Direkt angriff an")||ev.getCurrentItem().getItemMeta().getDisplayName().equalsIgnoreCase("Creeper")||ev.getCurrentItem().getItemMeta().getDisplayName().equalsIgnoreCase("Zombie")||ev.getCurrentItem().getItemMeta().getDisplayName().equalsIgnoreCase("Skeleton")){
 			pe.closeInventory();
 				String MonsterAtack = "None";
 			int pMobfield = 0;
@@ -336,10 +336,24 @@ public class CardGameEventListener implements Listener
 		int p2Mobfield = ev.getSlot() +1;
 		String p2Monster = main.cfg.getString(Arena2+"."+p2Playerside+".mobfield."+p2Mobfield+".mobname");
 		int APS= Main.main.duell.getInt(pe.getName()+".Cards.APS");
-		if (APS==0) {
+		if (APS==0||Main.main.duell.getInt(Arena2+".Round")==0) {
+			if(Main.main.duell.getInt(Arena2+".Round")==0) {
+				pe.sendMessage("In der Erstenrunde Draf man nicht Angreifen");
+			}else {
 		pe.sendMessage("Du hast keine Aktzions Punkte Mehr");	
+			}
 		}else {
 			Main.main.duell.set(pe.getName()+".Cards.APS", APS-1);
+		
+			
+			if (ev.getCurrentItem().getItemMeta().getDisplayName().contains("Direkt angriff an")) {
+				if( Bukkit.getPlayer(main.duell.getString(Arena2+"."+p2Playerside)).getHealth()-main.cfg.getInt(Arena2+"."+p2Playerside+".mobfield."+p2Mobfield+".mobint") >0) {
+					double p2Health = Bukkit.getPlayer(main.duell.getString(Arena2+"."+p2Playerside)).getHealth()-main.cfg.getInt(Arena2+"."+p2Playerside+".mobfield."+p2Mobfield+".mobint");
+					Bukkit.getPlayer(main.duell.getString(Arena2+"."+p2Playerside)).setHealth(p2Health);
+					}else {
+						Bukkit.getPlayer(main.duell.getString(Arena2+"."+p2Playerside)).setHealth(0);
+					}
+			}else {
 			
 		if(MonsterAtack.equalsIgnoreCase("creeper"))	{
 			main.cfg.set(Arena2+"."+p2Playerside+".mobfield."+p2Mobfield+".Def",0);
@@ -351,24 +365,25 @@ public class CardGameEventListener implements Listener
 			
 			if(!p2Monster.equalsIgnoreCase("Skeleton"))	{
 			int Counter = main.cfg.getInt(Arena2+"."+p2Playerside+".mobfield."+p2Mobfield+".Def")-main.cfg.getInt(Arena2+"."+p1Playerside+".mobfield."+pMobfield+".mobint")-1;
-			pe.sendMessage("Schaden "+Counter);
+			
 			main.cfg.set(Arena2+"."+p2Playerside+".mobfield."+p2Mobfield+".Def",Counter);
 			}else {
 			int Counter = main.cfg.getInt(Arena2+"."+p2Playerside+".mobfield."+p2Mobfield+".Def")-main.cfg.getInt(Arena2+"."+p1Playerside+".mobfield."+pMobfield+".mobint");
 			main.cfg.set(Arena2+"."+p2Playerside+".mobfield."+p2Mobfield+".Def",Counter);
-			pe.sendMessage("Schaden "+Counter);
+			
 			}
 		}else if(MonsterAtack.equalsIgnoreCase("Zombie"))	{
 			
 			
 			
 				int Counter = main.cfg.getInt(Arena2+"."+p1Playerside+".mobfield."+pMobfield+".Def")-main.cfg.getInt(Arena2+"."+p2Playerside+".mobfield."+p2Mobfield+".mobint")/2;
-				pe.sendMessage("Schaden "+Counter);
+				
 				main.cfg.set(Arena2+"."+p1Playerside+".mobfield."+pMobfield+".Def",Counter);	
 				int Counter2 = main.cfg.getInt(Arena2+"."+p2Playerside+".mobfield."+p2Mobfield+".Def")-main.cfg.getInt(Arena2+"."+p1Playerside+".mobfield."+pMobfield+".mobint");
 				main.cfg.set(Arena2+"."+p2Playerside+".mobfield."+p2Mobfield+".Def",Counter2);
 			
 		}
+			}
 		pe.sendMessage(Integer.toString(main.cfg.getInt(Arena2+"."+p1Playerside+".mobfield."+pMobfield+".Def")));
 		if(main.cfg.getInt(Arena2+"."+p1Playerside+".mobfield."+pMobfield+".Def") <= 0 ) {
 			
@@ -397,11 +412,11 @@ public class CardGameEventListener implements Listener
 		}
 			
 			
-		}
+		
 			pe.closeInventory();
 		}
 		}
-		
+		}
 		
 		if(ev.getInventory().getName().equalsIgnoreCase("Duell Beschwöre Creeper")) {
 			if(ev.getCurrentItem().getItemMeta().getDisplayName().equalsIgnoreCase("Hier Beschwören")){
@@ -631,7 +646,7 @@ public class CardGameEventListener implements Listener
 							if(directAtack) {
 								ItemStack Skull = new ItemStack(Material.PLAYER_HEAD , 1);
 						    	SkullMeta SMeta = (SkullMeta) Skull.getItemMeta(); 
-						    	SMeta.setDisplayName("Direkt angriff an"+main.duell.getString(Arena+".p2"));
+						    	SMeta.setDisplayName("Direkt angriff an "+main.duell.getString(Arena+".p2"));
 						    	SMeta.setOwningPlayer(Bukkit.getPlayer(main.duell.getString(Arena+".p2")));
 					    	
 					    		Skull.setItemMeta(SMeta);
@@ -763,7 +778,7 @@ public class CardGameEventListener implements Listener
 }
 	if(ev.getCurrentItem().getItemMeta().getDisplayName().equalsIgnoreCase("Runde Beenden")){
 		pe.sendMessage("Runde Wird Beendet");
-		
+		Main.main.duell.set(Arena2+".Round", Main.main.duell.getInt(Arena2+".Round")+1);
 		pe.closeInventory();
 		if(main.duell.getString(main.duell.getString(Arena2+".p1")+".Phase")=="Main"){
 			main.duell.set(main.duell.getString(Arena2+".p1")+".Phase", "Enemie");	
@@ -1127,15 +1142,17 @@ Player p = ev.getEntity();
 	String Arena =  Main.main.duell.getString(p.getName()+".DuellArena");	
 	String p1Name = main.duell.getString(Arena+".p1");
 	String p2Name = main.duell.getString(Arena+".p2");
+	
 	if(p1Name.equalsIgnoreCase(p.getName())) {
 		Bukkit.broadcastMessage("Der Spieler: "+p2Name+" Hat auf der Arena: "+Arena+" gegen: "+p1Name+" Gewonnen");
 		Bukkit.getPlayer(p2Name).performCommand("spawn");
-		Main.main.rereload();
+		
 	}else if(p2Name.equalsIgnoreCase(p.getName())) {
 		Bukkit.broadcastMessage("Der Spieler: "+p1Name+" Hat auf der Arena: "+Arena+" gegen: "+p2Name+" Gewonnen");
 		Bukkit.getPlayer(p1Name).performCommand("spawn");
-		Main.main.rereload();
+		
 	}
+	
 	if(p2Name.equalsIgnoreCase(p.getName())||p1Name.equalsIgnoreCase(p.getName())) {
 		Spawner.deSummon("p1", 1, Arena);
 		Spawner.deSummon("p1", 2, Arena);
@@ -1147,7 +1164,7 @@ Player p = ev.getEntity();
 		main.duell.set(p2Name+".Cards.Count", 0);
 		main.duell.set(p1Name+".Cards.Count", 0);
 		main.duell.set(Arena+".isinUse", false);
-		
+		main.duell.set(Arena+".Round", 0);
 		Spawner.deSummon("p2", 1, Arena);
 		Spawner.deSummon("p2", 2, Arena);
 		Spawner.deSummon("p2", 3, Arena);
